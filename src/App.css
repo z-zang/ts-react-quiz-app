@@ -1,0 +1,68 @@
+body {
+    background-image: url('../public/bg.jpg');
+    background-size: 700px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: larger;
+    margin: 0;
+}
+
+.main {
+    padding: 2rem;
+    margin-top: 50px;
+    width: 40vw;
+    height: 50vh;
+}
+
+.questionCard {
+    background-color: white;
+    padding: 2rem;
+    border: 4px solid palevioletred;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+
+}
+
+#root {
+    position: absolute;
+    display: grid;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.correct {
+    background-color: aquamarine;
+    color:black;
+}
+
+button {
+    font-size: large;
+}
+
+.startScreen {
+    background-color: white;
+    padding: 30px;
+    border: 4px solid teal;
+
+}
+
+.answersContainer {
+    display: grid
+}
+
+/* todo: fix */
+.buttonWrapper > * {
+    width: 100%;
+    padding: 10px 0px;
+}
+.buttonWrapper {
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.difficultySelect{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
