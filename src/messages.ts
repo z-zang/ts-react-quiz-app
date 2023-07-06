@@ -3,7 +3,6 @@ type Message = {
     subtitle: string
 }
 
-
 const messages: Message[] = [
     {
         title: "Utterly pathetic",
@@ -11,35 +10,35 @@ const messages: Message[] = [
     },
     {
         title: "Pitifully obtuse",
-        subtitle: "Greater brain activity has been observed in single celled organisms."
+        subtitle: "Greater intelligence has been observed in single celled organisms."
     },
     {
         title: "Lamentably moronic",
-        subtitle: ""
+        subtitle: "You'd be out of your depth in a mud puddle."
     },
     {
         title: "Tragically dull",
         subtitle: "Shine bright, like a turd."
     },
     {
-        title: "Boringly foolish",
-        subtitle: ""
-    },
-    {
-        title: "Disappointingly mediocre",
-        subtitle: "If you were an ice cream flavour, you'd be cardboard."
+        title: "Disappointingly foolish",
+        subtitle: "I went to the silly goose factory and everyone knew you."
     },
     {
         title: "Notably unreliable",
-        subtitle: "Comparable to a coin toss."
+        subtitle: "You're like a coin toss, except uglier."
+    },
+    {
+        title: "Boringly mediocre",
+        subtitle: "If you were a spice, you'd be flour."
     },
     {
         title: "Trifling and inconsequential",
-        subtitle: "You know some things, but not enough to be impressive."
+        subtitle: "You know things, just not enough to be impressive."
     },
     {
-        title: "Futilely Ambitious",
-        subtitle: "Stop telling everyone at the party about how you were a former gifted child."
+        title: "Futile Ambitions",
+        subtitle: "Stop telling everyone about how you were a former gifted child. We can tell."
     },
     {
         title: "Failed perfectionist",
@@ -47,7 +46,7 @@ const messages: Message[] = [
     },
     {
         title: "Boastful egoist",
-        subtitle: "Get off the internet and go and cure cancer if you're so smart."
+        subtitle: "All this knowledge, and you spend it on trivia quizzes. \bGet off the internet and do something with your life."
     }
 ]
 

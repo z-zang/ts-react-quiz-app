@@ -22,9 +22,11 @@ const App = () => {
     const [score, setScore] = useState(0)
     const [gameOver, setGameOver] = useState(true)
     const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.EASY)
+    const [error, setError] = useState('')
 
     const isFinalQuestion = questionIndex === TOTAL_QUESTIONS - 1
     const isActiveGame = !gameOver && !loading
+    const dataLoaded = !loading && !error
 
     const saveDifficulty = (e: FormEvent<HTMLElement>) => {
         const value = (e.target as HTMLInputElement).value;
@@ -33,11 +35,14 @@ const App = () => {
 
     const startQuiz = async () => {
         setLoading(true)
-        const newQuestions = await fetchQuestions(TOTAL_QUESTIONS, difficulty)
-        
-        setQuestions(newQuestions)
-        setLoading(false)
-        setGameOver(false)
+        const fetchResult = await fetchQuestions(TOTAL_QUESTIONS, difficulty)
+        if (fetchResult instanceof Error) {
+            setError(fetchResult.message)
+        } else {
+            setQuestions(fetchResult)
+            setLoading(false)
+            setGameOver(false)
+        }
     }
 
     const checkAnswer = (e: MouseEvent<HTMLButtonElement>) => {
@@ -77,13 +82,19 @@ const App = () => {
             
             <div className={`main ${gameOver ? 'tealBorder' : 'pinkBorder'}`}>
 
-                { loading && ( <p>Loading Questions...</p> )}
+                { loading && !error && ( <p>Loading Questions...</p> )}
+                { loading && error && ( 
+                    <>
+                        <p>Error loading data: {error}.</p> 
+                        <p>Refresh and try again?</p>
+                    </>
+                )}
                 
-                { !loading && gameOver && userAnswers.length === 0 && (
+                { dataLoaded && gameOver && userAnswers.length === 0 && (
                     <StartScreen difficulty={difficulty} saveDifficulty={saveDifficulty} startQuiz={startQuiz}/>
                 )}
 
-                { !loading && !gameOver && (
+                { dataLoaded && !gameOver && (
                     <QuestionCard
                         totalQuestions={TOTAL_QUESTIONS}
                         questionText={questions[questionIndex].question}
