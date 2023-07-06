@@ -1,6 +1,8 @@
-import { useState, MouseEvent, FormEvent, FormEventHandler } from 'react'
+import { useState, MouseEvent, FormEvent } from 'react'
 import QuestionCard from './components/QuestionCard'
+import StartScreen from './components/StartScreen';
 import { fetchQuestions, Difficulty, QuestionState } from './api/fetchQuestions';
+import messages from './messages.ts'
 import './App.css'
 
 const TOTAL_QUESTIONS = 10;
@@ -22,18 +24,20 @@ const App = () => {
     const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.EASY)
 
     const isFinalQuestion = questionIndex === TOTAL_QUESTIONS - 1
+    const isActiveGame = !gameOver && !loading
+
+    const saveDifficulty = (e: FormEvent<HTMLElement>) => {
+        const value = (e.target as HTMLInputElement).value;
+        setDifficulty(value as Difficulty);
+    }
 
     const startQuiz = async () => {
         setLoading(true)
-        setGameOver(false)
         const newQuestions = await fetchQuestions(TOTAL_QUESTIONS, difficulty)
         
         setQuestions(newQuestions)
-        setQuestionIndex(0)
-        setUserAnswers([])
-        setScore(0)
-    
         setLoading(false)
+        setGameOver(false)
     }
 
     const checkAnswer = (e: MouseEvent<HTMLButtonElement>) => {
@@ -41,7 +45,7 @@ const App = () => {
         
         const userAnswer = e.currentTarget.value;
         const isCorrect = questions[questionIndex].correct_answer === userAnswer;
-        
+
         if (isCorrect) setScore(prev => prev + 1)
 
         const answerRecord = {
@@ -58,57 +62,50 @@ const App = () => {
         : setQuestionIndex(prev => prev + 1)
     }
 
-    const saveDifficulty = (e: FormEvent<HTMLDivElement>) => {
-        const value = (e.target as HTMLInputElement).defaultValue
-        setDifficulty(value)
+    const playAgain = () => {
+        setQuestionIndex(0)
+        setUserAnswers([])
+        setScore(0)
     }
 
     return (
-        <main className='main'>
-            { (gameOver || userAnswers.length === TOTAL_QUESTIONS) && (
-                <div className='startScreen'>
-                    <p>Choose difficulty:</p>
-                    
-                    <div onChange={e => saveDifficulty(e)} className='difficultySelect'>
-                        {Object.values(Difficulty).map((difficulty, index) => (
-                            <div key={index}>
-                                <input 
-                                    type="radio" 
-                                    name="difficulty"
-                                    defaultChecked={difficulty === "easy"}
-                                    id={difficulty}
-                                    value={difficulty}
-                                /> {difficulty}
-                            </div>
-                        ))}
-                    </div>
-
-                    
-                    <button onClick={startQuiz}>Start Quiz!</button>
-                </div>
-            )}
-
-            { !gameOver && !loading && <p>Score: {score}</p> }
-            { !gameOver && !loading && <p>Mode: {difficulty}</p> }
-            { loading && <p>Loading Questions...</p> }
+        <div className='appContainer' tabIndex={-1}>
+            <div className={`scoreHeader ${isActiveGame ? 'visible' : 'hidden'}`}>
+                <p>Score: {score}</p>
+                <p>Mode: {difficulty}</p>
+            </div>
             
-            { !loading && !gameOver && (
-                <QuestionCard
-                    totalQuestions={TOTAL_QUESTIONS}
-                    questionText={questions[questionIndex].question}
-                    questionNumber={questionIndex + 1}
-                    answers={questions[questionIndex].answers}
-                    userAnswer={userAnswers ? userAnswers[questionIndex] : undefined}
-                    checkAnswer={checkAnswer}
-                />
-            )}
+            <div className={`main ${gameOver ? 'tealBorder' : 'pinkBorder'}`}>
 
-            { !gameOver && !loading && !isFinalQuestion && (userAnswers.length === questionIndex + 1) && (
-                <button onClick={nextQuestion}>
-                    Next
-                </button>
-            )}
-        </main>
+                { loading && ( <p>Loading Questions...</p> )}
+                
+                { !loading && gameOver && userAnswers.length === 0 && (
+                    <StartScreen difficulty={difficulty} saveDifficulty={saveDifficulty} startQuiz={startQuiz}/>
+                )}
+
+                { !loading && !gameOver && (
+                    <QuestionCard
+                        totalQuestions={TOTAL_QUESTIONS}
+                        questionText={questions[questionIndex].question}
+                        questionNumber={questionIndex + 1}
+                        answers={questions[questionIndex].answers}
+                        userAnswer={userAnswers ? userAnswers[questionIndex] : undefined}
+                        checkAnswer={checkAnswer}
+                        nextQuestion={nextQuestion}
+                    />
+                )}
+
+                { gameOver && userAnswers.length === TOTAL_QUESTIONS && (
+                    <div>
+                        <strong>You got {score}/{TOTAL_QUESTIONS}!</strong>
+                        <h2>{messages[score].title}</h2>
+                        <p>{messages[score].subtitle}</p>
+                        <button className='replayButton' onClick={playAgain}>Play again?</button>
+                    </div>
+                )}
+
+            </div>
+        </div>
     )
 }
 
